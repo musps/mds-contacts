@@ -14,6 +14,15 @@ import {
 import './index-styles.scss'
 
 const getFullname = contact => `${contact.lastname} ${contact.firstname}`
+const arrayToAlphabetical = data => data.reduce((d, contact) => {
+  const fullname = getFullname(contact)
+  const letter = fullname?.[0]?.toUpperCase()
+  if (!d[letter]) {
+    d[letter] = []
+  }
+  d[letter].push(contact)
+  return d
+}, [])
 
 function SearchBar({ initialValue, onChangeValue }) {
   const [value, setValue] = useState(initialValue)
@@ -22,7 +31,7 @@ function SearchBar({ initialValue, onChangeValue }) {
     if (onChangeValue) {
       onChangeValue(value)
     }
-  }, [value])
+  }, [value, onChangeValue])
 
   const SearchIcon = () => {
    const [css, theme] = useStyletron()
@@ -53,37 +62,52 @@ function SearchBar({ initialValue, onChangeValue }) {
 
 function ContactsList({ items, filter, action, onClickItem }) {
   const [data, setData] = useState([])
+  const [letters, setLetters] = useState([])
 
   useEffect(() => {
     let tmpData = [...items]
     // Sort asc by contact name
     tmpData = tmpData.filter(c => getFullname(c).includes(filter))
     tmpData.sort((c, n) => getFullname(c).localeCompare(getFullname(n)))
+    tmpData = arrayToAlphabetical(tmpData)
     setData(tmpData)
   }, [items, filter])
 
   return (
     <div className="ContactsList">
-      {data.map(contact => (
-        <div
-          className="ContactsList__item"
-          data-selected={action?.id === contact.id ? 'true' : 'false'}
-          onClick={() => onClickItem ? onClickItem(contact) : null}
-          key={contact.id}
-        >
-          <ListItem
-            artwork={() => (
-              <Avatar
-                name={getFullname(contact)}
-                size="scale1200"
-              />
-            )}
-          >
+      {Object.keys(data).map((section) => (
+        <React.Fragment key={section}>
+          <ListItem>
             <ListItemLabel>
-              {getFullname(contact)}
+              {section}
             </ListItemLabel>
           </ListItem>
-        </div>
+
+          {data[section].map(contact => {
+            const fullname = getFullname(contact)
+            return (
+              <div
+                className="ContactsList__item"
+                data-selected={action?.id === contact.id ? 'true' : 'false'}
+                onClick={() => onClickItem ? onClickItem(contact) : null}
+                key={contact.id}
+              >
+                <ListItem
+                  artwork={() => (
+                    <Avatar
+                      name={fullname}
+                      size="scale1200"
+                    />
+                  )}
+                >
+                  <ListItemLabel>
+                    {fullname}
+                  </ListItemLabel>
+                </ListItem>
+              </div>
+            )
+          })}
+        </React.Fragment>
       ))}
     </div>
   )
