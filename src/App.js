@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import List from './Components/List'
+import ContactCard from './Components/ContactCard'
+import * as mock from './mock'
+import './App.scss'
 
-function App() {
+function App(props) {
+  const {
+    contacts,
+    initializeContact,
+    updateContact,
+    addContact,
+    deleteContact
+  } = props
+  const [action, setAction] = useState('create')
+
+  useEffect(() => {
+    initializeContact(mock.contacts)
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="List">
+        <List
+          items={contacts}
+          onClickAdd={() => setAction('create')}
+          onClickItem={contact => setAction(contact)}
+        />
+      </div>
+
+      <div className="Content">
+        <ContactCard
+          addContact={addContact}
+          deleteContact={deleteContact}
+          updateContact={updateContact}
+          action={action}
+          setAction={setAction}
+        />
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  initializeContact: data => dispatch({ type: 'INITIALIZE_CONTACT', data }),
+  addContact: data => dispatch({ type: 'ADD_CONTACT', data }),
+  updateContact: data => dispatch({ type: 'UPDATE_CONTACT', data }),
+  deleteContact: id => dispatch({ type: 'DELETE_CONTACT', id }),
+})
+
+const getContacts = state => ({
+  contacts: state.contacts.get('items').toJS(),
+})
+
+export default connect(getContacts, mapDispatchToProps)(App)

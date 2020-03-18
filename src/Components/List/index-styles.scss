@@ -1,0 +1,20 @@
+.ListComponent {
+  background-color: white;
+  height: 100vh;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .Header {
+    padding: 0 10px;
+  }
+
+  .SearchBar {
+    padding: 10px;
+  }
+
+  .ContactsList {
+    flex-grow: 1;
+    overflow-y: scroll;
+  }
+}
