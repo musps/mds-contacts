@@ -4,17 +4,26 @@ import { FormControl } from 'baseui/form-control'
 import { Avatar } from 'baseui/avatar'
 import { Input } from 'baseui/input'
 import { Button, SIZE, KIND } from 'baseui/button'
+import { Notification } from 'baseui/notification'
+import { createContact } from './../../reducers/contacts'
 
-const mockContact = {
-  id: null,
-  firstname: '',
-  lastname: '',
-  phone: '',
-}
+const getMockContact = () => createContact({}).toJS()
+
+const ErrorMessage = ({ message }) => (
+  <Notification
+    overrides={{
+      Body: { style: { width: '100%' }},
+    }}
+    kind="negative"
+  >
+    {() => message}
+  </Notification>
+)
 
 function ContactCard(props) {
   const { action, setAction, addContact, updateContact, deleteContact } = props
-  const [contact, setContact] = useState(mockContact)
+  const [contact, setContact] = useState(getMockContact())
+  const [errorMessage, setErrorMessage] = useState('')
   const setValue = (key, value) => setContact({
     ...contact,
     [key]: value,
@@ -22,18 +31,22 @@ function ContactCard(props) {
   const onSubmit = (event) => {
     event.preventDefault()
     if (contact.firstname && contact.lastname && contact.phone) {
+      setErrorMessage('')
       if (contact.id) {
         updateContact(contact)
       } else {
         addContact(contact)
-        setContact(mockContact)
+        setContact(getMockContact())
       }
+    } else {
+      setErrorMessage('All fields must be filled!')
     }
   }
 
   useEffect(() => {
+    setErrorMessage('')
     if (action === 'create') {
-      setContact(mockContact)
+      setContact(getMockContact())
       setAction('create')
     } else {
       setContact(action)
@@ -43,6 +56,11 @@ function ContactCard(props) {
   return (
     <div className="ContactCard">
       <form className="form" onSubmit={onSubmit}>
+        {errorMessage && (
+          <ErrorMessage message={errorMessage} />
+        )}
+
+        <br />
         <Avatar
           name={`${contact.lastname} ${contact.firstname}`}
           size="196px"
@@ -50,19 +68,19 @@ function ContactCard(props) {
         />
         <br />
         <br />
-        <FormControl label={() => "Firstname"} caption={() => "caption"}>
+        <FormControl label={() => "Firstname"} caption={() => ""}>
           <Input
             value={contact.firstname}
             onChange={e => setValue('firstname', e.target.value)}
           />
         </FormControl>
-        <FormControl label={() => "Lastname"} caption={() => "caption"}>
+        <FormControl label={() => "Lastname"} caption={() => ""}>
           <Input
             value={contact.lastname}
             onChange={e => setValue('lastname', e.target.value)}
           />
         </FormControl>
-        <FormControl label={() => "Phone"} caption={() => "caption"}>
+        <FormControl label={() => "Phone"} caption={() => ""}>
           <Input
             value={contact.phone}
             onChange={e => setValue('phone', e.target.value)}
@@ -78,7 +96,8 @@ function ContactCard(props) {
             <Button
               onClick={() => {
                 deleteContact(contact.id)
-                setContact(mockContact)
+                setContact(getMockContact)
+                setAction('create')
               }}
               size={SIZE.large}
               kind={KIND.secondary}

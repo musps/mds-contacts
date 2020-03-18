@@ -6,11 +6,11 @@ import {
   DELETE_CONTACT,
 } from '../constants/contacts'
 
-const createContact = ({ id, firstname, lastname, phone }) => Map({
-  id,
-  firstname,
-  lastname,
-  phone,
+export const createContact = ({ id, firstname, lastname, phone }) => Map({
+  id: id ?? null,
+  firstname: firstname ?? '',
+  lastname: lastname ?? '',
+  phone: phone ?? '',
 })
 
 const initialState = Map({

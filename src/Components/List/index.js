@@ -62,7 +62,6 @@ function SearchBar({ initialValue, onChangeValue }) {
 
 function ContactsList({ items, filter, action, onClickItem }) {
   const [data, setData] = useState([])
-  const [letters, setLetters] = useState([])
 
   useEffect(() => {
     let tmpData = [...items]
