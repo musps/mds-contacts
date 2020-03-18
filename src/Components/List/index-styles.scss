@@ -16,5 +16,19 @@
   .ContactsList {
     flex-grow: 1;
     overflow-y: scroll;
+
+    &__item {
+      &[data-selected="true"] {
+        li {
+            background-color: #F6F6F6;
+        }
+      }
+      li {
+        transition: 0.3;
+        &:hover {
+          background-color: #F6F6F6;
+        }
+      }
+    }
   }
 }

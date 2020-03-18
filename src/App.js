@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import List from './Components/List'
 import ContactCard from './Components/ContactCard'
+import {
+  initializeContact,
+  addContact,
+  updateContact,
+  deleteContact,
+} from './actions/contacts'
 import * as mock from './mock'
 import './App.scss'
 
 function App(props) {
-  const {
-    contacts,
-    initializeContact,
-    updateContact,
-    addContact,
-    deleteContact
-  } = props
+  const { contacts, dispatch } = props
   const [action, setAction] = useState('create')
 
   useEffect(() => {
-    initializeContact(mock.contacts)
+    dispatch(initializeContact(mock.contacts))
   }, [])
 
   return (
@@ -24,6 +24,7 @@ function App(props) {
       <div className="List">
         <List
           items={contacts}
+          action={action}
           onClickAdd={() => setAction('create')}
           onClickItem={contact => setAction(contact)}
         />
@@ -31,9 +32,9 @@ function App(props) {
 
       <div className="Content">
         <ContactCard
-          addContact={addContact}
-          deleteContact={deleteContact}
-          updateContact={updateContact}
+          addContact={data => dispatch(addContact(data))}
+          deleteContact={id => dispatch(deleteContact(id))}
+          updateContact={data => dispatch(updateContact(data))}
           action={action}
           setAction={setAction}
         />
@@ -42,15 +43,8 @@ function App(props) {
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  initializeContact: data => dispatch({ type: 'INITIALIZE_CONTACT', data }),
-  addContact: data => dispatch({ type: 'ADD_CONTACT', data }),
-  updateContact: data => dispatch({ type: 'UPDATE_CONTACT', data }),
-  deleteContact: id => dispatch({ type: 'DELETE_CONTACT', id }),
-})
-
 const getContacts = state => ({
   contacts: state.contacts.get('items').toJS(),
 })
 
-export default connect(getContacts, mapDispatchToProps)(App)
+export default connect(getContacts)(App)

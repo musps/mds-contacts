@@ -51,7 +51,7 @@ function SearchBar({ initialValue, onChangeValue }) {
   )
 }
 
-function ContactsList({ items, filter, onClickItem }) {
+function ContactsList({ items, filter, action, onClickItem }) {
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -66,6 +66,8 @@ function ContactsList({ items, filter, onClickItem }) {
     <div className="ContactsList">
       {data.map(contact => (
         <div
+          className="ContactsList__item"
+          data-selected={action?.id === contact.id ? 'true' : 'false'}
           onClick={() => onClickItem ? onClickItem(contact) : null}
           key={contact.id}
         >
@@ -88,7 +90,7 @@ function ContactsList({ items, filter, onClickItem }) {
 }
 
 function ListComponent(props) {
-  const { items, onClickAdd, onClickItem } = props
+  const { items, action, onClickAdd, onClickItem } = props
   const [searchValue, setSearchValue] = useState('')
 
   return (
@@ -118,6 +120,7 @@ function ListComponent(props) {
 
       {/* contact list */}
       <ContactsList
+        action={action}
         items={items}
         filter={searchValue}
         onClickItem={onClickItem}

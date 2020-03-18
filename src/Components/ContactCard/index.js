@@ -32,8 +32,9 @@ function ContactCard(props) {
   }
 
   useEffect(() => {
-    if (action == 'create') {
+    if (action === 'create') {
       setContact(mockContact)
+      setAction('create')
     } else {
       setContact(action)
     }
