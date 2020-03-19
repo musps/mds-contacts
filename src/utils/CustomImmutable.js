@@ -12,7 +12,7 @@
 // console.log(result1.toJS())
 // console.log(result2.toJS())
 
-// const result3= CustomImmutable.List(dataList)
+// const result3 = CustomImmutable.List(dataList)
 // const result4 = result3.push(10)
 // console.log(result3.toJS())
 // console.log(result4.toJS())

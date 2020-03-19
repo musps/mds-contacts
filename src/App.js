@@ -12,7 +12,7 @@ import * as mock from './mock'
 import './App.scss'
 
 function App(props) {
-  const { contactsPure, contacts, dispatch } = props
+  const { contacts, dispatch } = props
   const [action, setAction] = useState('create')
 
   useEffect(() => {
