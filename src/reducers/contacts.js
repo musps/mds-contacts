@@ -1,4 +1,5 @@
-import { List, Map } from 'immutable'
+// import { List, Map } from 'immutable'
+import { List, Map } from './../utils/CustomImmutable'
 import {
   INITIALIZE_CONTACT,
   ADD_CONTACT,
@@ -7,15 +8,15 @@ import {
 } from '../constants/contacts'
 
 export const createContact = ({ id, firstname, lastname, phone }) => Map({
-  id: id ?? null,
-  firstname: firstname ?? '',
-  lastname: lastname ?? '',
-  phone: phone ?? '',
-})
+  id: id || null,
+  firstname: firstname || '',
+  lastname: lastname || '',
+  phone: phone || '',
+}) 
 
 const initialState = Map({
-  id: 1,
-  items: List(),
+  id: 0,
+  items: List([]),
 })
 
 const initialzeContacts = (state, action) => {
@@ -30,12 +31,13 @@ const initialzeContacts = (state, action) => {
   })
 
   return state
-    .set('id', id)
+    .set('id', id + 1)
     .set('items', List(items))
 }
 
 const addContact = (state, action) => {
   const { data } = action
+
   const newContact = createContact({
     ...data,
     id: state.get('id')
@@ -52,6 +54,7 @@ const addContact = (state, action) => {
 const updateContact = (state, action) => {
   const { data } = action
   const index = state.get('items').findIndex(i => i.get('id') === data.id)
+
   if (index === -1) {
     return state
   }
@@ -62,7 +65,6 @@ const updateContact = (state, action) => {
       .set('lastname', data.lastname)
       .set('phone', data.phone)
   })
-
   return state.set('items', updateItems)
 }
 
